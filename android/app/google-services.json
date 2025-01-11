@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "248657955345",
+    "project_id": "navidav2-3830f",
+    "storage_bucket": "navidav2-3830f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:248657955345:android:97e9e516f2de2c1ba13fb0",
+        "android_client_info": {
+          "package_name": "com.myflight.diary"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAG2ABeEb_dd-5n5N-iFf8NteZYPTi0RbQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
