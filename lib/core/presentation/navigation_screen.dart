@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iconly/iconly.dart';
 
 class NavigationScreen extends StatelessWidget {
   final Widget body;
@@ -23,20 +24,36 @@ class NavigationScreen extends StatelessWidget {
         selectedIndex: currentPageIndex,
         destinations: [
           NavigationDestination(
-            icon: Icon(Icons.home),
+            icon: Icon(IconlyBold.home),
             label: 'Main',
+            selectedIcon: Icon(
+              IconlyBold.home,
+              color: Colors.blue,
+            ),
           ),
           NavigationDestination(
-            icon: Icon(Icons.calendar_month_outlined),
+            icon: Icon(IconlyBold.calendar),
             label: 'calendar',
+            selectedIcon: Icon(
+              IconlyBold.calendar,
+              color: Colors.blue,
+            ),
           ),
           NavigationDestination(
-            icon: Icon(Icons.quiz),
+            icon: Icon(IconlyBold.game),
             label: 'quiz',
+            selectedIcon: Icon(
+              IconlyBold.game,
+              color: Colors.blue,
+            ),
           ),
           NavigationDestination(
-            icon: Icon(Icons.notifications_none),
+            icon: Icon(IconlyBold.notification),
             label: 'notice',
+            selectedIcon: Icon(
+              IconlyBold.notification,
+              color: Colors.blue,
+            ),
           ),
         ],
       ),
