@@ -35,10 +35,6 @@ class MainScreen extends StatelessWidget {
                           style: TextStyles.titleTextSemiBold
                               .copyWith(color: Colors.black),
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.refresh_outlined),
-                          onPressed: () {},
-                        ),
                       ],
                     ),
                     const SizedBox(height: 30),

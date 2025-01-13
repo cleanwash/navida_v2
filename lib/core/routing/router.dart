@@ -10,7 +10,7 @@ import 'package:navida_v2/presentation/quiz/quiz_screen.dart';
 import 'package:navida_v2/presentation/splash/splash_screen.dart';
 
 final router = GoRouter(
-  initialLocation: Routerpath.main,
+  initialLocation: Routerpath.login,
   routes: [
     GoRoute(
       path: Routerpath.splash,

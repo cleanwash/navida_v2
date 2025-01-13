@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 
 import 'package:navida_v2/domain/model/flight_goal_time.dart';
-import 'package:navida_v2/util/ui/text_styles.dart';
 
 class FlightBox extends StatelessWidget {
   final FlightGoalTime flightGoalTime;

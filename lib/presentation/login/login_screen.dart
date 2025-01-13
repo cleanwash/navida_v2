@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:navida_v2/presentation/component/login_button.dart';
+import 'package:navida_v2/presentation/login/login_view_model.dart';
 import 'package:navida_v2/util/ui/text_styles.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   final void Function() onTapKakao;
@@ -21,8 +23,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
