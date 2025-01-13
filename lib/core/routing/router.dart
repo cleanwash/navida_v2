@@ -1,21 +1,27 @@
 import 'package:go_router/go_router.dart';
 import 'package:navida_v2/core/presentation/navigation_screen.dart';
 import 'package:navida_v2/core/routing/routerPath.dart';
+import 'package:navida_v2/data/repository/apple_auth_repository_impl.dart';
+import 'package:navida_v2/data/repository/email_auth_repository_impl.dart';
+import 'package:navida_v2/data/repository/google_auth_repository_impl.dart';
+import 'package:navida_v2/domain/use_case/auth_use_case.dart';
 import 'package:navida_v2/presentation/calendar/calendar_screen.dart';
 import 'package:navida_v2/presentation/login/email_sign_up_screen.dart';
-import 'package:navida_v2/presentation/login/login_screen.dart';
+import 'package:navida_v2/presentation/login/login_view_model.dart';
+import 'package:navida_v2/presentation/login/screen/login_root.dart';
 import 'package:navida_v2/presentation/main/main_screen.dart';
 import 'package:navida_v2/presentation/notice/notice_screen.dart';
 import 'package:navida_v2/presentation/quiz/quiz_screen.dart';
 import 'package:navida_v2/presentation/splash/splash_screen.dart';
+import 'package:provider/provider.dart';
 
 final router = GoRouter(
-  initialLocation: Routerpath.login,
+  initialLocation: Routerpath.splash,
   routes: [
     GoRoute(
       path: Routerpath.splash,
       builder: (context, state) => SplashScreen(
-        onTapLogin: () => context.go(Routerpath.login),
+        onTapLogin: () => context.go(Routerpath.loginRoot),
       ),
     ),
     GoRoute(
@@ -23,12 +29,16 @@ final router = GoRouter(
       builder: (context, state) => EmailSignUpScreen(),
     ),
     GoRoute(
-      path: Routerpath.login,
-      builder: (context, state) => LoginScreen(
-        onTapApple: () {},
-        onTapGoogle: () {},
-        onTapKakao: () {},
-        onTapEmailSignUp: () => context.go(Routerpath.emailSignUp),
+      path: Routerpath.loginRoot,
+      builder: (context, state) => ChangeNotifierProvider(
+        create: (context) => LoginViewModel(
+          authUseCase: AuthUseCase(
+            emailRepository: EmailAuthRepositoryImpl(),
+            googleRepository: GoogleAuthRepositoryImpl(),
+            appleRepository: AppleAuthRepositoryImpl(),
+          ),
+        ),
+        child: LoginRoot(),
       ),
     ),
     StatefulShellRoute.indexedStack(
