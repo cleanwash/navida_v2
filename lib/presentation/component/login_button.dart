@@ -6,15 +6,16 @@ class LoginButton extends StatelessWidget {
   final String? imagePath;
   final String text;
   final void Function() onLoginClick;
+  final TextStyle style;
 
   const LoginButton({
     super.key,
-    required this.backgroundColor,
+    this.backgroundColor,
     this.fontColor,
     this.imagePath,
     required this.text,
     required this.onLoginClick,
-    required TextStyle style,
+    required this.style,
   });
 
   @override
@@ -40,7 +41,10 @@ class LoginButton extends StatelessWidget {
             ],
             Text(
               text,
-              style: TextStyle(color: fontColor),
+              style: TextStyle(
+                color: fontColor,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ],
         ),

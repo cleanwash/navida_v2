@@ -22,7 +22,7 @@ abstract class TextStyles {
   static TextStyle bodyTextMedium = TextStyle(
     fontFamily: 'Pretendard',
     fontSize: 16,
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w700,
   );
 
   static TextStyle bodyTextSemiBold = TextStyle(
@@ -33,8 +33,8 @@ abstract class TextStyles {
 
   static TextStyle bodyTextBold = TextStyle(
     fontFamily: 'Pretendard',
-    fontSize: 16,
-    fontWeight: FontWeight.w700,
+    fontSize: 20,
+    fontWeight: FontWeight.w800,
   );
 
   static TextStyle captionTextMedium = TextStyle(

@@ -2,11 +2,11 @@ import 'package:go_router/go_router.dart';
 import 'package:navida_v2/core/presentation/navigation_screen.dart';
 import 'package:navida_v2/core/routing/routerPath.dart';
 import 'package:navida_v2/presentation/calendar/calendar_screen.dart';
+import 'package:navida_v2/presentation/login/email_sign_up_screen.dart';
 import 'package:navida_v2/presentation/login/login_screen.dart';
 import 'package:navida_v2/presentation/main/main_screen.dart';
 import 'package:navida_v2/presentation/notice/notice_screen.dart';
 import 'package:navida_v2/presentation/quiz/quiz_screen.dart';
-import 'package:navida_v2/presentation/sign_up/%08email_sign_up.dart';
 import 'package:navida_v2/presentation/splash/splash_screen.dart';
 
 final router = GoRouter(
@@ -20,7 +20,7 @@ final router = GoRouter(
     ),
     GoRoute(
       path: Routerpath.emailSignUp,
-      builder: (context, state) => EmailSignUp(),
+      builder: (context, state) => EmailSignUpScreen(),
     ),
     GoRoute(
       path: Routerpath.login,
