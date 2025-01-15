@@ -1,52 +1,69 @@
-import 'package:flutter/foundation.dart';
-import 'package:navida_v2/domain/model/auth_params.dart';
-import 'package:navida_v2/domain/use_case/auth_use_case.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+
+import 'package:navida_v2/data/data_source/google_auth.dart';
+import 'package:navida_v2/data/data_source/kakao_auth.dart';
 
 class LoginViewModel extends ChangeNotifier {
-  final AuthUseCase _authUseCase;
+  final GoogleAuth googleAuth;
+  final KakaoAuth kakaoAuth;
+  bool _isLoading = false;
+  String? _error;
+  User? _user;
 
-  LoginViewModel({required AuthUseCase authUseCase})
-      : _authUseCase = authUseCase;
+  LoginViewModel({
+    required this.googleAuth,
+    required this.kakaoAuth,
+  });
 
-  bool get isLoggedIn => _authUseCase.isUserLoggedIn();
-
-  Future<void> checkAuthStatus() async {
-    final result = await _authUseCase.execute();
-    result.when(
-      success: () => notifyListeners(),
-      error: (message) {
-        // 로그인이 필요한 상태 처리
-      },
-    );
-  }
+  bool get isLoading => _isLoading;
+  String? get error => _error;
+  bool get isUserLoggedIn => _user != null;
 
   Future<void> signInWithGoogle() async {
-    final result = await _authUseCase.signInWithGoogle();
-    result.when(
-      success: () => notifyListeners(),
-      error: (message) {
-        // 에러 처리
-      },
-    );
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      final userCredential = await googleAuth.signInWithGoogle();
+      _user = userCredential.user;
+      print('로그인 성공: ${_user?.email}');
+      notifyListeners();
+    } catch (e) {
+      _error = e.toString();
+      print('로그인 에러: $_error');
+      notifyListeners();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
-  Future<void> signInWithApple() async {
-    final result = await _authUseCase.signInWithApple();
-    result.when(
-      success: () => notifyListeners(),
-      error: (message) {
-        // 에러 처리
-      },
-    );
-  }
+  Future<void> signInWithKakao() async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
 
-  Future<void> signInWithEmail(AuthParams params) async {
-    final result = await _authUseCase.signInWithEmail(params);
-    result.when(
-      success: () => notifyListeners(),
-      error: (message) {
-        // 에러 처리
-      },
-    );
+      final userCredential = await kakaoAuth.signInWithKakao();
+      _user = userCredential.user;
+
+      if (_user == null) {
+        throw Exception('로그인은 성공했으나 사용자 정보를 가져오지 못했습니다.');
+      }
+
+      print('카카오 로그인 완료. 사용자 이메일: ${_user?.email}');
+      notifyListeners();
+    } catch (e) {
+      _error = e.toString();
+      print('카카오 로그인 에러 발생: $_error');
+      notifyListeners();
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 }

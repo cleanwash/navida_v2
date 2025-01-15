@@ -1,10 +1,9 @@
 import 'package:go_router/go_router.dart';
 import 'package:navida_v2/core/presentation/navigation_screen.dart';
 import 'package:navida_v2/core/routing/routerPath.dart';
-import 'package:navida_v2/data/repository/apple_auth_repository_impl.dart';
-import 'package:navida_v2/data/repository/email_auth_repository_impl.dart';
-import 'package:navida_v2/data/repository/google_auth_repository_impl.dart';
-import 'package:navida_v2/domain/use_case/auth_use_case.dart';
+import 'package:navida_v2/data/data_source/google_auth.dart';
+import 'package:navida_v2/data/data_source/kakao_auth.dart';
+
 import 'package:navida_v2/presentation/calendar/calendar_screen.dart';
 import 'package:navida_v2/presentation/login/email_sign_up_screen.dart';
 import 'package:navida_v2/presentation/login/login_view_model.dart';
@@ -16,7 +15,7 @@ import 'package:navida_v2/presentation/splash/splash_screen.dart';
 import 'package:provider/provider.dart';
 
 final router = GoRouter(
-  initialLocation: Routerpath.splash,
+  initialLocation: Routerpath.loginRoot,
   routes: [
     GoRoute(
       path: Routerpath.splash,
@@ -32,11 +31,8 @@ final router = GoRouter(
       path: Routerpath.loginRoot,
       builder: (context, state) => ChangeNotifierProvider(
         create: (context) => LoginViewModel(
-          authUseCase: AuthUseCase(
-            emailRepository: EmailAuthRepositoryImpl(),
-            googleRepository: GoogleAuthRepositoryImpl(),
-            appleRepository: AppleAuthRepositoryImpl(),
-          ),
+          googleAuth: GoogleAuth(),
+          kakaoAuth: KakaoAuth(),
         ),
         child: LoginRoot(),
       ),
