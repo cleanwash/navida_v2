@@ -7,7 +7,7 @@ class LoginScreen extends StatefulWidget {
   final void Function() onTapKakao;
   final void Function() onTapGoogle;
   final void Function() onTapFacebook;
-  final void Function() onTapEmailSignUp;
+  final void Function(String email, String password) onTapEmailSignUp;
   const LoginScreen({
     super.key,
     required this.onTapKakao,
@@ -21,6 +21,16 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Spacer(flex: 2),
+              const Spacer(flex: 1),
               Lottie.asset('assets/animation/flight.json'),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -80,7 +90,12 @@ class _LoginScreenState extends State<LoginScreen> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
-                  onTap: widget.onTapEmailSignUp,
+                  onTap: () {
+                    widget.onTapEmailSignUp(
+                      _emailController.text,
+                      _passwordController.text,
+                    );
+                  },
                   child: Container(
                     margin: EdgeInsets.only(bottom: 10),
                     width: double.infinity,

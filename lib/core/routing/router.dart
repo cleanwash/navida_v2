@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:navida_v2/core/presentation/navigation_screen.dart';
 import 'package:navida_v2/core/routing/routerPath.dart';
+import 'package:navida_v2/data/data_source/email_auth.dart';
 import 'package:navida_v2/data/data_source/facebook_auth.dart';
 import 'package:navida_v2/data/data_source/google_auth.dart';
 import 'package:navida_v2/data/data_source/kakao_auth.dart';
@@ -35,6 +36,7 @@ final router = GoRouter(
           facebookAuth: FaceBookAuth(),
           googleAuth: GoogleAuth(),
           kakaoAuth: KakaoAuth(),
+          emailAuth: EmailAuth(),
         ),
         child: LoginRoot(),
       ),

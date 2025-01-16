@@ -15,49 +15,63 @@ class LoginRoot extends StatelessWidget {
       listenable: viewModel,
       builder: (context, child) {
         return LoginScreen(
-            onTapKakao: () async {
-              try {
-                await viewModel.signInWithKakao();
-                if (viewModel.isUserLoggedIn && context.mounted) {
-                  context.go(Routerpath.calendar);
-                }
-              } catch (e) {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(e.toString())),
-                  );
-                }
+          onTapKakao: () async {
+            try {
+              await viewModel.signInWithKakao();
+              if (viewModel.isUserLoggedIn && context.mounted) {
+                context.go(Routerpath.calendar);
               }
-            },
-            onTapGoogle: () async {
-              try {
-                await viewModel.signInWithGoogle();
-                if (viewModel.isUserLoggedIn && context.mounted) {
-                  context.go(Routerpath.calendar);
-                }
-              } catch (e) {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(e.toString())),
-                  );
-                }
+            } catch (e) {
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(e.toString())),
+                );
               }
-            },
-            onTapFacebook: () async {
-              try {
-                await viewModel.signInWithFacebook();
-                if (viewModel.isUserLoggedIn && context.mounted) {
-                  context.go(Routerpath.calendar);
-                }
-              } catch (e) {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(e.toString())),
-                  );
-                }
+            }
+          },
+          onTapGoogle: () async {
+            try {
+              await viewModel.signInWithGoogle();
+              if (viewModel.isUserLoggedIn && context.mounted) {
+                context.go(Routerpath.calendar);
               }
-            },
-            onTapEmailSignUp: () {});
+            } catch (e) {
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(e.toString())),
+                );
+              }
+            }
+          },
+          onTapFacebook: () async {
+            try {
+              await viewModel.signInWithFacebook();
+              if (viewModel.isUserLoggedIn && context.mounted) {
+                context.go(Routerpath.calendar);
+              }
+            } catch (e) {
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(e.toString())),
+                );
+              }
+            }
+          },
+          onTapEmailSignUp: (String email, String password) async {
+            try {
+              await viewModel.handleEmailAuth(email, password);
+              if (viewModel.isUserLoggedIn && context.mounted) {
+                context.go(Routerpath.calendar);
+              }
+            } catch (e) {
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(e.toString())),
+                );
+              }
+            }
+          },
+        );
       },
     );
   }

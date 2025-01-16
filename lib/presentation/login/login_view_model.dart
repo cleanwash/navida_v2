@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:navida_v2/data/data_source/email_auth.dart';
 import 'package:navida_v2/data/data_source/facebook_auth.dart';
 import 'package:navida_v2/data/data_source/google_auth.dart';
 import 'package:navida_v2/data/data_source/kakao_auth.dart';
@@ -9,6 +10,7 @@ class LoginViewModel extends ChangeNotifier {
   final GoogleAuth googleAuth;
   final KakaoAuth kakaoAuth;
   final FaceBookAuth facebookAuth;
+  final EmailAuth emailAuth;
   bool _isLoading = false;
   String? _error;
   User? _user;
@@ -17,6 +19,7 @@ class LoginViewModel extends ChangeNotifier {
     required this.googleAuth,
     required this.kakaoAuth,
     required this.facebookAuth,
+    required this.emailAuth,
   });
 
   bool get isLoading => _isLoading;
@@ -87,6 +90,35 @@ class LoginViewModel extends ChangeNotifier {
     } catch (e) {
       _error = e.toString();
       print('페이스북 로그인 에러 발생: $_error');
+      notifyListeners();
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> handleEmailAuth(String email, String password) async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      final userCredential = await emailAuth.signInOrSignUp(
+        email: email,
+        password: password,
+      );
+      _user = userCredential.user;
+
+      if (_user == null) {
+        throw Exception('로그인은 성공했으나 사용자 정보를 가져오지 못했습니다.');
+      }
+
+      print('이메일 로그인 완료. 사용자 이메일: ${_user?.email}');
+      notifyListeners();
+    } catch (e) {
+      _error = e.toString();
+      print('이메일 로그인 에러 발생: $_error');
       notifyListeners();
       rethrow;
     } finally {
