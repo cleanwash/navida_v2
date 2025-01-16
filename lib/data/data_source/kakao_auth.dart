@@ -18,12 +18,6 @@ class KakaoAuth {
         await UserApi.instance.loginWithKakaoAccount();
         print("카카오 계정 로그인 성공");
         return await _signInWithFirebase();
-        // try {
-        //   await UserApi.instance.loginWithKakaoAccount();
-        //   return await _signInWithFirebase();
-        // } catch (error) {
-        //   throw Exception('Failed to login with Kakao account: $error');
-        // }
       }
     } else {
       try {

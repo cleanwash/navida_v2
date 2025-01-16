@@ -1,13 +1,14 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
+import 'package:navida_v2/data/data_source/facebook_auth.dart';
 import 'package:navida_v2/data/data_source/google_auth.dart';
 import 'package:navida_v2/data/data_source/kakao_auth.dart';
 
 class LoginViewModel extends ChangeNotifier {
   final GoogleAuth googleAuth;
   final KakaoAuth kakaoAuth;
+  final FaceBookAuth facebookAuth;
   bool _isLoading = false;
   String? _error;
   User? _user;
@@ -15,6 +16,7 @@ class LoginViewModel extends ChangeNotifier {
   LoginViewModel({
     required this.googleAuth,
     required this.kakaoAuth,
+    required this.facebookAuth,
   });
 
   bool get isLoading => _isLoading;
@@ -59,6 +61,32 @@ class LoginViewModel extends ChangeNotifier {
     } catch (e) {
       _error = e.toString();
       print('카카오 로그인 에러 발생: $_error');
+      notifyListeners();
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> signInWithFacebook() async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      final userCredential = await facebookAuth.signInWithFacebook();
+      _user = userCredential.user;
+
+      if (_user == null) {
+        throw Exception('페이스북 로그인은 성공했으나 사용자 정보를 가져오지 못했습니다.');
+      }
+
+      print('페이스북 로그인 완료. 사용자 이메일: ${_user?.email}');
+      notifyListeners();
+    } catch (e) {
+      _error = e.toString();
+      print('페이스북 로그인 에러 발생: $_error');
       notifyListeners();
       rethrow;
     } finally {

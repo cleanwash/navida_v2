@@ -43,7 +43,20 @@ class LoginRoot extends StatelessWidget {
                 }
               }
             },
-            onTapApple: () {},
+            onTapFacebook: () async {
+              try {
+                await viewModel.signInWithFacebook();
+                if (viewModel.isUserLoggedIn && context.mounted) {
+                  context.go(Routerpath.calendar);
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(e.toString())),
+                  );
+                }
+              }
+            },
             onTapEmailSignUp: () {});
       },
     );

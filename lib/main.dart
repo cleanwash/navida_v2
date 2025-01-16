@@ -12,7 +12,7 @@ Future<void> main() async {
     nativeAppKey: 'fad5927a32e17a28cfe76daf0bbcf2ea',
     javaScriptAppKey: '7b4b061aede105b99ad50cd00bd143e5',
   );
-  //firebase login
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );

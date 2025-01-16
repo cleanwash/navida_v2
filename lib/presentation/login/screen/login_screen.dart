@@ -6,13 +6,13 @@ import 'package:navida_v2/util/ui/text_styles.dart';
 class LoginScreen extends StatefulWidget {
   final void Function() onTapKakao;
   final void Function() onTapGoogle;
-  final void Function() onTapApple;
+  final void Function() onTapFacebook;
   final void Function() onTapEmailSignUp;
   const LoginScreen({
     super.key,
     required this.onTapKakao,
     required this.onTapGoogle,
-    required this.onTapApple,
+    required this.onTapFacebook,
     required this.onTapEmailSignUp,
   });
 
@@ -56,12 +56,12 @@ class _LoginScreenState extends State<LoginScreen> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: LoginButton(
-                  backgroundColor: Colors.black,
-                  fontColor: Colors.white,
+                  backgroundColor: Colors.white,
+                  fontColor: Colors.black,
                   style: TextStyles.bodyTextMedium,
-                  imagePath: 'assets/images/sns-apple.png',
-                  onLoginClick: widget.onTapApple,
-                  text: 'apple로 시작하기',
+                  imagePath: 'assets/images/sns-facebook.png',
+                  onLoginClick: widget.onTapFacebook,
+                  text: '페이스북으로 시작하기',
                 ),
               ),
               SizedBox(height: 10),

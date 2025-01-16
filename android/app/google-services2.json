@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "248657955345",
+    "project_id": "navidav2-3830f",
+    "storage_bucket": "navidav2-3830f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:248657955345:android:97e9e516f2de2c1ba13fb0",
+        "android_client_info": {
+          "package_name": "com.myflight.diary"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "248657955345-du1p1kem9cfjfctnooqj8v5t1d8c0la4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.myflight.diary",
+            "certificate_hash": "7e10eb86f275c0de4ed45890f56e73c0d08cfee6"
+          }
+        },
+        {
+          "client_id": "248657955345-csumtua2cf99qjbbr7q0btkjv9n6olv7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAG2ABeEb_dd-5n5N-iFf8NteZYPTi0RbQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "248657955345-csumtua2cf99qjbbr7q0btkjv9n6olv7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "248657955345-td07usgi02jc8rs6i3hfhvpt85i3n6cg.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.myflight.diary"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
