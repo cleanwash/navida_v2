@@ -7,13 +7,13 @@ class LoginScreen extends StatefulWidget {
   final void Function() onTapKakao;
   final void Function() onTapGoogle;
   final void Function() onTapFacebook;
-  final void Function(String email, String password) onTapEmailSignUp;
+  final void Function() onTapApple;
   const LoginScreen({
     super.key,
     required this.onTapKakao,
     required this.onTapGoogle,
     required this.onTapFacebook,
-    required this.onTapEmailSignUp,
+    required this.onTapApple,
   });
 
   @override
@@ -89,29 +89,13 @@ class _LoginScreenState extends State<LoginScreen> {
               const Spacer(),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: GestureDetector(
-                  onTap: () {
-                    widget.onTapEmailSignUp(
-                      _emailController.text,
-                      _passwordController.text,
-                    );
-                  },
-                  child: Container(
-                    margin: EdgeInsets.only(bottom: 10),
-                    width: double.infinity,
-                    height: 56,
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Center(
-                      child: Text(
-                        '이메일로 시작하기',
-                        style: TextStyles.bodyTextMedium
-                            .copyWith(color: Colors.white),
-                      ),
-                    ),
-                  ),
+                child: LoginButton(
+                  backgroundColor: Colors.black,
+                  fontColor: Colors.white,
+                  style: TextStyles.bodyTextMedium,
+                  imagePath: 'assets/images/sns-apple.png',
+                  onLoginClick: widget.onTapApple,
+                  text: '애플로 시작하기',
                 ),
               ),
             ],

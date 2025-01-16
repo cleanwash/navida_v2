@@ -57,9 +57,9 @@ class LoginRoot extends StatelessWidget {
               }
             }
           },
-          onTapEmailSignUp: (String email, String password) async {
+          onTapApple: () async {
             try {
-              await viewModel.handleEmailAuth(email, password);
+              await viewModel.signInWithApple();
               if (viewModel.isUserLoggedIn && context.mounted) {
                 context.go(Routerpath.calendar);
               }
