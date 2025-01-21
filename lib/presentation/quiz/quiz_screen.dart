@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:navida_v2/presentation/component/quiz/quiz_answer_animation.dart';
+import 'package:navida_v2/presentation/component/quiz/quiz_question_card.dart';
+import 'package:navida_v2/presentation/component/quiz/quiz_result_card.dart';
 import 'package:navida_v2/presentation/quiz/quiz_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -22,6 +25,7 @@ class _QuizScreenState extends State<QuizScreen> {
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<QuizViewModel>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('항공 퀴즈'),
@@ -41,7 +45,7 @@ class _QuizScreenState extends State<QuizScreen> {
           SafeArea(
             child: Center(
               child: SingleChildScrollView(
-                child: _buildQuestionScreen(viewModel),
+                child: _buildContent(viewModel),
               ),
             ),
           ),
@@ -50,66 +54,29 @@ class _QuizScreenState extends State<QuizScreen> {
     );
   }
 
-  Widget _buildQuestionScreen(QuizViewModel viewModel) {
-    final quizs = viewModel.state.quizs;
-    if (quizs.isEmpty) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+  Widget _buildContent(QuizViewModel viewModel) {
+    if (viewModel.state.quizs.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
     }
-    final currentQuiz = quizs[viewModel.state.currentIndex];
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(16.0),
-          margin: const EdgeInsets.all(16.0),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.8),
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                currentQuiz.question,
-                textAlign: TextAlign.center,
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20),
-              ...List.generate(currentQuiz.options.length, (index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        checkAnswerAndProceed(index,
-                            currentQuiz.correctAnswerIndex[0], viewModel);
-                      },
-                      style: ElevatedButton.styleFrom(),
-                      child: Text(currentQuiz.options[index]),
-                    ),
-                  ),
-                );
-              }),
-            ],
-          ),
-        ),
-      ],
+
+    final currentQuiz = viewModel.state.quizs[viewModel.state.currentIndex];
+
+    return QuizQuestionCard(
+      question: currentQuiz.question,
+      options: currentQuiz.options,
+      onOptionSelected: (index) =>
+          _handleAnswer(index, currentQuiz.correctAnswerIndex[0], viewModel),
     );
   }
 
-  void checkAnswerAndProceed(
+  void _handleAnswer(
       int selectedIndex, int correctIndex, QuizViewModel viewModel) {
     bool isCorrect = selectedIndex == correctIndex;
 
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => _buildAnswerAnimation(isCorrect),
+      builder: (context) => QuizAnswerAnimation(isCorrect: isCorrect),
     ).then((_) {
       if (viewModel.state.currentIndex < viewModel.state.quizs.length - 1) {
         viewModel.nextQuestion();
@@ -117,93 +84,14 @@ class _QuizScreenState extends State<QuizScreen> {
         showDialog(
           context: context,
           barrierDismissible: false,
-          builder: (context) => _buildResultScreen(viewModel),
+          builder: (context) => QuizResultCard(
+            onRestart: () {
+              viewModel.resetQuiz();
+              Navigator.of(context).pop();
+            },
+          ),
         );
       }
     });
-  }
-
-  Widget _buildAnswerAnimation(bool isCorrect) {
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: Dialog(
-        backgroundColor: Colors.transparent,
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Lottie.asset(
-                isCorrect
-                    ? 'assets/animation/correct.json'
-                    : 'assets/animation/wrong.json',
-                height: 200,
-                repeat: false,
-                onLoaded: (composition) {
-                  Future.delayed(composition.duration, () {
-                    if (mounted) {
-                      Navigator.of(context).pop();
-                    }
-                  });
-                },
-              ),
-              const SizedBox(height: 16),
-              Text(
-                isCorrect ? '정답입니다!' : '틀렸습니다.',
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildResultScreen(QuizViewModel viewModel) {
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      child: Container(
-        padding: const EdgeInsets.all(16.0),
-        margin: const EdgeInsets.all(16.0),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.8),
-          borderRadius: BorderRadius.circular(15),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Lottie.asset(
-              'assets/animation/flight.json',
-              fit: BoxFit.contain,
-              height: 300,
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              '퀴즈 완료!',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              '점수: 0/0',
-              style: TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                viewModel.resetQuiz();
-                Navigator.of(context).pop();
-              },
-              child: const Text('다시 시작'),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }
