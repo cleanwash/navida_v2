@@ -1,11 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:navida_v2/presentation/quiz/quiz_view_model.dart';
+import 'package:provider/provider.dart';
 
-class QuizScreen extends StatelessWidget {
+class QuizScreen extends StatefulWidget {
   const QuizScreen({super.key});
 
   @override
+  State<QuizScreen> createState() => _QuizScreenState();
+}
+
+class _QuizScreenState extends State<QuizScreen> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final viewModel = context.watch<QuizViewModel>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('항공 퀴즈'),

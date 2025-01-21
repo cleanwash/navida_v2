@@ -39,8 +39,9 @@ class MainScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 30),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('  나의 비행시간🧑🏽‍✈️👩🏻‍✈️',
+                        Text('  🧑🏽‍✈️나의 비행시간👩🏻‍✈️',
                             style: TextStyles.titleTextMedium),
                       ],
                     ),

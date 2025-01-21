@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:lottie/lottie.dart';
 
@@ -60,29 +59,10 @@ class CalendarScreen extends StatelessWidget {
   Widget _buildListView() {
     // 임시로 빈 화면 표시
     return Center(
-      child: Text("비행 기록을 작성해주세요.",
-          style: TextStyle(color: Colors.white, fontSize: 18)),
+      child: Text(
+        "비행 기록을 작성해주세요.",
+        style: TextStyle(color: Colors.white, fontSize: 18),
+      ),
     );
-
-    // 실제 리스트뷰 구현시 사용할 코드
-    /*
-    return ListView.separated(
-      itemCount: entries.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          title: Text("제목",
-              style: TextStyle(fontSize: 24, color: Colors.white)),
-          subtitle: Text('항공기 등록번호 - 비행시간',
-              style: TextStyle(color: Colors.white70)),
-          trailing: Text("시간",
-              style: TextStyle(fontSize: 12, color: Colors.white54)),
-          onTap: () {},
-          onLongPress: () {},
-        );
-      },
-      separatorBuilder: (context, index) =>
-          Divider(height: 1, color: Colors.white24),
-    );
-    */
   }
 }
