@@ -8,7 +8,7 @@ class QuizModel with _$QuizModel {
   factory QuizModel({
     required String question,
     required List<String> options,
-    required int correctAnswerIndex,
+    required List<int> correctAnswerIndex,
   }) = _QuizModel;
 
   factory QuizModel.fromJson(Map<String, dynamic> json) =>

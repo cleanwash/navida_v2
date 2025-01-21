@@ -8,6 +8,7 @@ part 'quiz_state.g.dart';
 class QuizState with _$QuizState {
   factory QuizState({
     @Default([]) List<QuizModel> quizs,
+    @Default(0) int currentIndex,
   }) = _QuizState;
 
   factory QuizState.fromJson(Map<String, dynamic> json) =>

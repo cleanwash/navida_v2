@@ -12,9 +12,11 @@ _$QuizStateImpl _$$QuizStateImplFromJson(Map<String, dynamic> json) =>
               ?.map((e) => QuizModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
+      currentIndex: (json['currentIndex'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$$QuizStateImplToJson(_$QuizStateImpl instance) =>
     <String, dynamic>{
       'quizs': instance.quizs,
+      'currentIndex': instance.currentIndex,
     };

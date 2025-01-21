@@ -21,6 +21,7 @@ QuizState _$QuizStateFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$QuizState {
   List<QuizModel> get quizs => throw _privateConstructorUsedError;
+  int get currentIndex => throw _privateConstructorUsedError;
 
   /// Serializes this QuizState to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -37,7 +38,7 @@ abstract class $QuizStateCopyWith<$Res> {
   factory $QuizStateCopyWith(QuizState value, $Res Function(QuizState) then) =
       _$QuizStateCopyWithImpl<$Res, QuizState>;
   @useResult
-  $Res call({List<QuizModel> quizs});
+  $Res call({List<QuizModel> quizs, int currentIndex});
 }
 
 /// @nodoc
@@ -56,12 +57,17 @@ class _$QuizStateCopyWithImpl<$Res, $Val extends QuizState>
   @override
   $Res call({
     Object? quizs = null,
+    Object? currentIndex = null,
   }) {
     return _then(_value.copyWith(
       quizs: null == quizs
           ? _value.quizs
           : quizs // ignore: cast_nullable_to_non_nullable
               as List<QuizModel>,
+      currentIndex: null == currentIndex
+          ? _value.currentIndex
+          : currentIndex // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -74,7 +80,7 @@ abstract class _$$QuizStateImplCopyWith<$Res>
       __$$QuizStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({List<QuizModel> quizs});
+  $Res call({List<QuizModel> quizs, int currentIndex});
 }
 
 /// @nodoc
@@ -91,12 +97,17 @@ class __$$QuizStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? quizs = null,
+    Object? currentIndex = null,
   }) {
     return _then(_$QuizStateImpl(
       quizs: null == quizs
           ? _value._quizs
           : quizs // ignore: cast_nullable_to_non_nullable
               as List<QuizModel>,
+      currentIndex: null == currentIndex
+          ? _value.currentIndex
+          : currentIndex // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -104,7 +115,9 @@ class __$$QuizStateImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$QuizStateImpl implements _QuizState {
-  _$QuizStateImpl({final List<QuizModel> quizs = const []}) : _quizs = quizs;
+  _$QuizStateImpl(
+      {final List<QuizModel> quizs = const [], this.currentIndex = 0})
+      : _quizs = quizs;
 
   factory _$QuizStateImpl.fromJson(Map<String, dynamic> json) =>
       _$$QuizStateImplFromJson(json);
@@ -119,8 +132,12 @@ class _$QuizStateImpl implements _QuizState {
   }
 
   @override
+  @JsonKey()
+  final int currentIndex;
+
+  @override
   String toString() {
-    return 'QuizState(quizs: $quizs)';
+    return 'QuizState(quizs: $quizs, currentIndex: $currentIndex)';
   }
 
   @override
@@ -128,13 +145,15 @@ class _$QuizStateImpl implements _QuizState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$QuizStateImpl &&
-            const DeepCollectionEquality().equals(other._quizs, _quizs));
+            const DeepCollectionEquality().equals(other._quizs, _quizs) &&
+            (identical(other.currentIndex, currentIndex) ||
+                other.currentIndex == currentIndex));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_quizs));
+  int get hashCode => Object.hash(
+      runtimeType, const DeepCollectionEquality().hash(_quizs), currentIndex);
 
   /// Create a copy of QuizState
   /// with the given fields replaced by the non-null parameter values.
@@ -153,13 +172,16 @@ class _$QuizStateImpl implements _QuizState {
 }
 
 abstract class _QuizState implements QuizState {
-  factory _QuizState({final List<QuizModel> quizs}) = _$QuizStateImpl;
+  factory _QuizState({final List<QuizModel> quizs, final int currentIndex}) =
+      _$QuizStateImpl;
 
   factory _QuizState.fromJson(Map<String, dynamic> json) =
       _$QuizStateImpl.fromJson;
 
   @override
   List<QuizModel> get quizs;
+  @override
+  int get currentIndex;
 
   /// Create a copy of QuizState
   /// with the given fields replaced by the non-null parameter values.

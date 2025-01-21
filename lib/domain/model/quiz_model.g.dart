@@ -11,7 +11,9 @@ _$QuizModelImpl _$$QuizModelImplFromJson(Map<String, dynamic> json) =>
       question: json['question'] as String,
       options:
           (json['options'] as List<dynamic>).map((e) => e as String).toList(),
-      correctAnswerIndex: (json['correctAnswerIndex'] as num).toInt(),
+      correctAnswerIndex: (json['correctAnswerIndex'] as List<dynamic>)
+          .map((e) => (e as num).toInt())
+          .toList(),
     );
 
 Map<String, dynamic> _$$QuizModelImplToJson(_$QuizModelImpl instance) =>

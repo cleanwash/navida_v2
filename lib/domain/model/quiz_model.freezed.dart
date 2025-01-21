@@ -22,7 +22,7 @@ QuizModel _$QuizModelFromJson(Map<String, dynamic> json) {
 mixin _$QuizModel {
   String get question => throw _privateConstructorUsedError;
   List<String> get options => throw _privateConstructorUsedError;
-  int get correctAnswerIndex => throw _privateConstructorUsedError;
+  List<int> get correctAnswerIndex => throw _privateConstructorUsedError;
 
   /// Serializes this QuizModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -39,7 +39,8 @@ abstract class $QuizModelCopyWith<$Res> {
   factory $QuizModelCopyWith(QuizModel value, $Res Function(QuizModel) then) =
       _$QuizModelCopyWithImpl<$Res, QuizModel>;
   @useResult
-  $Res call({String question, List<String> options, int correctAnswerIndex});
+  $Res call(
+      {String question, List<String> options, List<int> correctAnswerIndex});
 }
 
 /// @nodoc
@@ -73,7 +74,7 @@ class _$QuizModelCopyWithImpl<$Res, $Val extends QuizModel>
       correctAnswerIndex: null == correctAnswerIndex
           ? _value.correctAnswerIndex
           : correctAnswerIndex // ignore: cast_nullable_to_non_nullable
-              as int,
+              as List<int>,
     ) as $Val);
   }
 }
@@ -86,7 +87,8 @@ abstract class _$$QuizModelImplCopyWith<$Res>
       __$$QuizModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String question, List<String> options, int correctAnswerIndex});
+  $Res call(
+      {String question, List<String> options, List<int> correctAnswerIndex});
 }
 
 /// @nodoc
@@ -116,9 +118,9 @@ class __$$QuizModelImplCopyWithImpl<$Res>
           : options // ignore: cast_nullable_to_non_nullable
               as List<String>,
       correctAnswerIndex: null == correctAnswerIndex
-          ? _value.correctAnswerIndex
+          ? _value._correctAnswerIndex
           : correctAnswerIndex // ignore: cast_nullable_to_non_nullable
-              as int,
+              as List<int>,
     ));
   }
 }
@@ -129,8 +131,9 @@ class _$QuizModelImpl implements _QuizModel {
   _$QuizModelImpl(
       {required this.question,
       required final List<String> options,
-      required this.correctAnswerIndex})
-      : _options = options;
+      required final List<int> correctAnswerIndex})
+      : _options = options,
+        _correctAnswerIndex = correctAnswerIndex;
 
   factory _$QuizModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$QuizModelImplFromJson(json);
@@ -145,8 +148,14 @@ class _$QuizModelImpl implements _QuizModel {
     return EqualUnmodifiableListView(_options);
   }
 
+  final List<int> _correctAnswerIndex;
   @override
-  final int correctAnswerIndex;
+  List<int> get correctAnswerIndex {
+    if (_correctAnswerIndex is EqualUnmodifiableListView)
+      return _correctAnswerIndex;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_correctAnswerIndex);
+  }
 
   @override
   String toString() {
@@ -161,14 +170,17 @@ class _$QuizModelImpl implements _QuizModel {
             (identical(other.question, question) ||
                 other.question == question) &&
             const DeepCollectionEquality().equals(other._options, _options) &&
-            (identical(other.correctAnswerIndex, correctAnswerIndex) ||
-                other.correctAnswerIndex == correctAnswerIndex));
+            const DeepCollectionEquality()
+                .equals(other._correctAnswerIndex, _correctAnswerIndex));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, question,
-      const DeepCollectionEquality().hash(_options), correctAnswerIndex);
+  int get hashCode => Object.hash(
+      runtimeType,
+      question,
+      const DeepCollectionEquality().hash(_options),
+      const DeepCollectionEquality().hash(_correctAnswerIndex));
 
   /// Create a copy of QuizModel
   /// with the given fields replaced by the non-null parameter values.
@@ -190,7 +202,7 @@ abstract class _QuizModel implements QuizModel {
   factory _QuizModel(
       {required final String question,
       required final List<String> options,
-      required final int correctAnswerIndex}) = _$QuizModelImpl;
+      required final List<int> correctAnswerIndex}) = _$QuizModelImpl;
 
   factory _QuizModel.fromJson(Map<String, dynamic> json) =
       _$QuizModelImpl.fromJson;
@@ -200,7 +212,7 @@ abstract class _QuizModel implements QuizModel {
   @override
   List<String> get options;
   @override
-  int get correctAnswerIndex;
+  List<int> get correctAnswerIndex;
 
   /// Create a copy of QuizModel
   /// with the given fields replaced by the non-null parameter values.
