@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:navida_v2/presentation/component/login_button.dart';
@@ -87,17 +89,20 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const Spacer(),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: LoginButton(
-                  backgroundColor: Colors.black,
-                  fontColor: Colors.white,
-                  style: TextStyles.bodyTextMedium,
-                  imagePath: 'assets/images/sns-apple.png',
-                  onLoginClick: widget.onTapApple,
-                  text: '애플로 시작하기',
+              Visibility(
+                visible: Platform.isIOS,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: LoginButton(
+                    backgroundColor: Colors.black,
+                    fontColor: Colors.white,
+                    style: TextStyles.bodyTextMedium,
+                    imagePath: 'assets/images/sns-apple.png',
+                    onLoginClick: widget.onTapApple,
+                    text: '애플로 시작하기',
+                  ),
                 ),
-              ),
+              )
             ],
           ),
         ],
