@@ -1,16 +1,18 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:navida_v2/core/routing/router.dart';
 import 'package:navida_v2/firebase_options.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk_user.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
 
 //kakao login
   KakaoSdk.init(
-    nativeAppKey: 'fad5927a32e17a28cfe76daf0bbcf2ea',
-    javaScriptAppKey: '7b4b061aede105b99ad50cd00bd143e5',
+    nativeAppKey: dotenv.env['NATIVE_APP_KEY'],
+    javaScriptAppKey: dotenv.env['JAVASCRIPT_APP_KEY'],
   );
 
   await Firebase.initializeApp(

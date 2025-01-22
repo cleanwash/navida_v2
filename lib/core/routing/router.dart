@@ -6,8 +6,10 @@ import 'package:navida_v2/data/data_source/apple_auth.dart';
 import 'package:navida_v2/data/data_source/facebook_auth.dart';
 import 'package:navida_v2/data/data_source/google_auth.dart';
 import 'package:navida_v2/data/data_source/kakao_auth.dart';
+import 'package:navida_v2/data/repository/flight_calendar_repository_impl.dart';
 import 'package:navida_v2/data/repository/quiz_repository_impl.dart';
 import 'package:navida_v2/presentation/calendar/calendar_screen.dart';
+import 'package:navida_v2/presentation/calendar/calendar_view_model.dart';
 import 'package:navida_v2/presentation/login/email_sign_up_screen.dart';
 import 'package:navida_v2/presentation/login/login_view_model.dart';
 import 'package:navida_v2/presentation/login/screen/login_root.dart';
@@ -68,7 +70,13 @@ final router = GoRouter(
           routes: [
             GoRoute(
               path: Routerpath.calendar,
-              builder: (context, state) => CalendarScreen(),
+              builder: (context, state) => ChangeNotifierProvider(
+                create: (context) => CalendarViewModel(
+                  repository: FlightCalendarRepositoryImpl(
+                      firestore: FirebaseFirestore.instance),
+                ),
+                child: CalendarScreen(),
+              ),
             ),
           ],
         ),

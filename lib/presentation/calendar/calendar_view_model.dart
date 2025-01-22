@@ -1,147 +1,141 @@
-import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:navida_v2/domain/model/calendar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:table_calendar/table_calendar.dart';
+import 'package:navida_v2/domain/model/flight_calendar.dart';
+import 'package:navida_v2/domain/repository/flight_calendart_repository.dart';
+import 'package:navida_v2/presentation/calendar/calendar_state.dart';
 
 class CalendarViewModel extends ChangeNotifier {
-  final SharedPreferences prefs;
-  List<Calendar> calendarEntries = [];
-  DateTime selectedDate = DateTime.now();
-  double _totalFlightTime = 0;
+  final FlightCalendarRepository _repository;
+  CalendarState _state = CalendarState(selectedDate: DateTime.now());
+  CalendarState get state => _state;
 
-  CalendarViewModel({required this.prefs}) {
-    _loadCalendarEntries();
-    _loadTotalFlightTime();
+  CalendarViewModel({
+    required FlightCalendarRepository repository,
+  }) : _repository = repository {
+    loadCalendars();
   }
 
-  double get totalFlightTime => _totalFlightTime;
+  Future<void> loadCalendars() async {
+    try {
+      _state = state.copyWith(isLoading: true);
+      notifyListeners();
 
-  void _loadTotalFlightTime() {
-    _totalFlightTime = prefs.getDouble('totalFlightTime') ?? 0;
-    notifyListeners();
+      final calendars = await _repository.getFlightCalendars();
+      final totalFlightTime = calendars.fold<double>(
+        0,
+        (sum, entry) => sum + entry.totalFlightTime,
+      );
+
+      _state = state.copyWith(
+        calendars: calendars,
+        totalFlightTime: totalFlightTime,
+        isLoading: false,
+      );
+      notifyListeners();
+    } catch (e) {
+      _state = state.copyWith(
+        calendars: [],
+        totalFlightTime: 0,
+        isLoading: false,
+      );
+      notifyListeners();
+      print('Error loading calendars: $e');
+    }
   }
 
-  void _saveTotalFlightTime() {
-    prefs.setDouble('totalFlightTime', _totalFlightTime);
-  }
-
-  void _calculateTotalFlightTime() {
-    _totalFlightTime =
-        calendarEntries.fold(0, (sum, entry) => sum + entry.totalFlightTime);
-    _saveTotalFlightTime();
-    notifyListeners();
-  }
-
-  List<Calendar> getByDate(DateTime date) {
-    return calendarEntries
-        .where((entry) => isSameDay(date, entry.createdAt))
+  List<FlightCalendar> getByDate(DateTime date) {
+    return state.calendars
+        .where((entry) => DateTime.utc(
+              entry.createdAt.year,
+              entry.createdAt.month,
+              entry.createdAt.day,
+            ).isAtSameMomentAs(DateTime.utc(
+              date.year,
+              date.month,
+              date.day,
+            )))
         .toList();
   }
 
-  void _loadCalendarEntries() {
-    List<String> stringEntries = prefs.getStringList("calendarEntries") ?? [];
-    for (String stringEntry in stringEntries) {
-      Map<String, dynamic> jsonMap = jsonDecode(stringEntry);
-      Calendar entry = Calendar.fromJson(jsonMap);
-      calendarEntries.add(entry);
-    }
-    _calculateTotalFlightTime();
-  }
-
-  void create({
-    required String aircraftRegistration,
-    required double totalFlightTime,
-    required double distance,
-    required String text,
-    required DateTime createdAt,
-  }) {
-    Calendar newEntry = Calendar(
-      createdAt: createdAt,
-      aircraftRegistration: aircraftRegistration,
-      totalFlightTime: totalFlightTime,
-      distance: distance,
-      text: text,
-    );
-
-    calendarEntries.add(newEntry);
-    _saveCalendarEntries();
-    _calculateTotalFlightTime();
-    notifyListeners();
-  }
-
-  void update(DateTime createdAt, Calendar updatedEntry) {
-    int index =
-        calendarEntries.indexWhere((entry) => entry.createdAt == createdAt);
-    if (index != -1) {
-      calendarEntries[index] = updatedEntry;
-      _saveCalendarEntries();
-      _calculateTotalFlightTime();
+  Future<void> create(FlightCalendar calendar) async {
+    try {
+      _state = state.copyWith(isLoading: true);
       notifyListeners();
+
+      await _repository.createFlightCalendar(calendar);
+      await loadCalendars();
+    } catch (e) {
+      _state = state.copyWith(isLoading: false);
+      notifyListeners();
+      print('Error creating calendar entry: $e');
     }
   }
 
-  void updateTotalFlightTime(String value) {
-    double newTime = double.tryParse(value) ?? 0;
-    _totalFlightTime = newTime;
-    _saveTotalFlightTime();
-    notifyListeners();
+  Future<void> update(String id, FlightCalendar updatedEntry) async {
+    try {
+      _state = state.copyWith(isLoading: true);
+      notifyListeners();
+
+      await _repository.updateFlightCalendar(id, updatedEntry);
+      await loadCalendars();
+    } catch (e) {
+      _state = state.copyWith(isLoading: false);
+      notifyListeners();
+      print('Error updating calendar entry: $e');
+    }
   }
 
-  void delete(DateTime createdAt) {
-    calendarEntries.removeWhere((entry) => entry.createdAt == createdAt);
-    _saveCalendarEntries();
-    _calculateTotalFlightTime();
-    notifyListeners();
-  }
+  Future<void> delete(String id) async {
+    try {
+      _state = state.copyWith(isLoading: true);
+      notifyListeners();
 
-  void _saveCalendarEntries() {
-    List<String> stringEntries = calendarEntries.map((entry) {
-      Map<String, dynamic> jsonMap = entry.toJson();
-      return jsonEncode(jsonMap);
-    }).toList();
-    prefs.setStringList("calendarEntries", stringEntries);
+      await _repository.deleteFlightCalendar(id);
+      await loadCalendars();
+    } catch (e) {
+      _state = state.copyWith(isLoading: false);
+      notifyListeners();
+      print('Error deleting calendar entry: $e');
+    }
   }
 
   void setSelectedDate(DateTime date) {
-    selectedDate = date;
+    _state = state.copyWith(selectedDate: date);
     notifyListeners();
   }
 
   void showCreateDialog(BuildContext context) {
-    final TextEditingController aircraftRegistrationController =
-        TextEditingController();
-    final TextEditingController totalFlightTimeController =
-        TextEditingController();
-    final TextEditingController distanceController = TextEditingController();
-    final TextEditingController textController = TextEditingController();
+    final aircraftRegistrationController = TextEditingController();
+    final totalFlightTimeController = TextEditingController();
+    final distanceController = TextEditingController();
+    final historyController = TextEditingController();
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('새 항목 추가'),
+          title: const Text('새 항목 추가'),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 TextField(
                   controller: aircraftRegistrationController,
-                  decoration: InputDecoration(labelText: '항공기 등록번호'),
+                  decoration: const InputDecoration(labelText: '항공기 등록번호'),
                 ),
                 TextField(
                   controller: totalFlightTimeController,
-                  decoration: InputDecoration(labelText: '총 비행 시간'),
-                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(labelText: '총 비행 시간'),
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
                 ),
                 TextField(
                   controller: distanceController,
-                  decoration: InputDecoration(labelText: '비행 거리'),
-                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(labelText: '비행 거리'),
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
                 ),
                 TextField(
-                  controller: textController,
-                  decoration: InputDecoration(labelText: '내용'),
+                  controller: historyController,
+                  decoration: const InputDecoration(labelText: '내용'),
                   maxLines: 3,
                 ),
               ],
@@ -149,22 +143,40 @@ class CalendarViewModel extends ChangeNotifier {
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('취소'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+              child: const Text('취소'),
+              onPressed: () => Navigator.of(context).pop(),
             ),
             TextButton(
-              child: Text('추가'),
+              child: const Text('추가'),
               onPressed: () {
-                create(
+                // 입력값 검증
+                final totalFlightTime =
+                    double.tryParse(totalFlightTimeController.text);
+                final distance = double.tryParse(distanceController.text);
+
+                if (aircraftRegistrationController.text.isEmpty ||
+                    totalFlightTime == null ||
+                    distance == null ||
+                    historyController.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('모든 필드를 올바르게 입력해주세요.')),
+                  );
+                  return;
+                }
+
+                final docRef = FirebaseFirestore.instance
+                    .collection('flightCalendar')
+                    .doc();
+                final newCalendar = FlightCalendar(
+                  id: docRef.id,
+                  createdAt: state.selectedDate,
                   aircraftRegistration: aircraftRegistrationController.text,
-                  totalFlightTime:
-                      double.tryParse(totalFlightTimeController.text) ?? 0,
-                  distance: double.tryParse(distanceController.text) ?? 0,
-                  text: textController.text,
-                  createdAt: selectedDate,
+                  totalFlightTime: totalFlightTime,
+                  distance: distance,
+                  history: historyController.text,
                 );
+
+                create(newCalendar);
                 Navigator.of(context).pop();
               },
             ),
@@ -172,30 +184,5 @@ class CalendarViewModel extends ChangeNotifier {
         );
       },
     );
-    notifyListeners();
-  }
-
-  void showUpdateDialog(BuildContext context, Calendar entry) {
-    notifyListeners();
-  }
-
-  void showDeleteDialog(BuildContext context, Calendar entry) {
-    notifyListeners();
-  }
-
-  void clearControllers(List<TextEditingController> controllers) {
-    for (var controller in controllers) {
-      controller.clear();
-    }
-    notifyListeners();
-  }
-
-  void setControllers(
-      Calendar entry, Map<String, TextEditingController> controllers) {
-    controllers['text']?.text = entry.text;
-    controllers['aircraftRegistration']?.text = entry.aircraftRegistration;
-    controllers['totalFlightTime']?.text = entry.totalFlightTime.toString();
-    controllers['distance']?.text = entry.distance.toString();
-    notifyListeners();
   }
 }

@@ -1,19 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:lottie/lottie.dart';
+import 'package:navida_v2/presentation/calendar/calendar_view_model.dart';
 
-class CalendarScreen extends StatelessWidget {
-  CalendarScreen({super.key});
+class CalendarScreen extends StatefulWidget {
+  const CalendarScreen({super.key});
 
-  final TextEditingController textController = TextEditingController();
-  final TextEditingController aircraftRegistrationController =
-      TextEditingController();
-  final TextEditingController totalFlightTimeController =
-      TextEditingController();
-  final TextEditingController distanceController = TextEditingController();
+  @override
+  State<CalendarScreen> createState() => _CalendarScreenState();
+}
+
+class _CalendarScreenState extends State<CalendarScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      context.read<CalendarViewModel>().loadCalendars();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = context.watch<CalendarViewModel>();
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(
@@ -30,39 +40,74 @@ class CalendarScreen extends StatelessWidget {
                 TableCalendar(
                   firstDay: DateTime.utc(2010, 10, 16),
                   lastDay: DateTime.utc(2040, 3, 14),
-                  focusedDay: DateTime.now(), // 임시 값
+                  focusedDay: viewModel.state.selectedDate,
+                  currentDay: DateTime.now(),
                   calendarFormat: CalendarFormat.month,
                   availableCalendarFormats: const {CalendarFormat.month: '월'},
-                  selectedDayPredicate: (day) => false, // 임시 값
+                  selectedDayPredicate: (day) =>
+                      isSameDay(day, viewModel.state.selectedDate),
                   onDaySelected: (selectedDay, focusedDay) {
-                    // 선택 로직 구현 필요
+                    viewModel.setSelectedDate(selectedDay);
                   },
+                  eventLoader: (day) {
+                    return viewModel.getByDate(day);
+                  },
+                  calendarStyle: const CalendarStyle(
+                    markersMaxCount: 4,
+                    markerDecoration: BoxDecoration(
+                      color: Colors.blue,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
                 ),
                 const Divider(height: 1),
                 Expanded(
-                  child: _buildListView(),
+                  child: _buildListView(viewModel),
                 ),
               ],
             ),
           ),
+          if (viewModel.state.isLoading)
+            const Center(
+              child: CircularProgressIndicator(),
+            ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // 생성 다이얼로그 로직 구현 필요
-        },
-        child: Icon(Icons.add),
+        onPressed: () => viewModel.showCreateDialog(context),
+        child: const Icon(Icons.add),
       ),
     );
   }
 
-  Widget _buildListView() {
-    // 임시로 빈 화면 표시
-    return Center(
-      child: Text(
-        "비행 기록을 작성해주세요.",
-        style: TextStyle(color: Colors.white, fontSize: 18),
-      ),
+  Widget _buildListView(CalendarViewModel viewModel) {
+    final entries = viewModel.getByDate(viewModel.state.selectedDate);
+
+    if (entries.isEmpty) {
+      return const Center(
+        child: Text(
+          "비행 기록을 작성해주세요.",
+          style: TextStyle(color: Colors.white, fontSize: 18),
+        ),
+      );
+    }
+
+    return ListView.builder(
+      itemCount: entries.length,
+      itemBuilder: (context, index) {
+        final entry = entries[index];
+        return Card(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: ListTile(
+            title: Text(entry.aircraftRegistration),
+            subtitle: Text(entry.history),
+            trailing: Text('${entry.totalFlightTime}시간'),
+            onTap: () {
+              // 상세보기 또는 수정 다이얼로그 표시
+            },
+          ),
+        );
+      },
     );
   }
 }

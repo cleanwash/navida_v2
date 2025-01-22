@@ -1,25 +1,28 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'calendar.dart';
+part of 'flight_calendar.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$CalendarImpl _$$CalendarImplFromJson(Map<String, dynamic> json) =>
-    _$CalendarImpl(
+_$FlightCalendarImpl _$$FlightCalendarImplFromJson(Map<String, dynamic> json) =>
+    _$FlightCalendarImpl(
+      id: json['id'] as String?,
       createdAt: DateTime.parse(json['createdAt'] as String),
       aircraftRegistration: json['aircraftRegistration'] as String,
       totalFlightTime: (json['totalFlightTime'] as num).toDouble(),
       distance: (json['distance'] as num).toDouble(),
-      text: json['text'] as String,
+      history: json['history'] as String,
     );
 
-Map<String, dynamic> _$$CalendarImplToJson(_$CalendarImpl instance) =>
+Map<String, dynamic> _$$FlightCalendarImplToJson(
+        _$FlightCalendarImpl instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'createdAt': instance.createdAt.toIso8601String(),
       'aircraftRegistration': instance.aircraftRegistration,
       'totalFlightTime': instance.totalFlightTime,
       'distance': instance.distance,
-      'text': instance.text,
+      'history': instance.history,
     };
