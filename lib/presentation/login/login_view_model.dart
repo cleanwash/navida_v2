@@ -2,7 +2,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:navida_v2/data/data_source/apple_auth.dart';
-import 'package:navida_v2/data/data_source/email_auth.dart';
 import 'package:navida_v2/data/data_source/facebook_auth.dart';
 import 'package:navida_v2/data/data_source/google_auth.dart';
 import 'package:navida_v2/data/data_source/kakao_auth.dart';
@@ -16,7 +15,7 @@ class LoginViewModel extends ChangeNotifier {
   String? _error;
   User? _user;
 
-  LoginViewModel( {
+  LoginViewModel({
     required this.googleAuth,
     required this.kakaoAuth,
     required this.facebookAuth,
@@ -99,7 +98,7 @@ class LoginViewModel extends ChangeNotifier {
     }
   }
 
- Future<void> signInWithApple() async {
+  Future<void> signInWithApple() async {
     try {
       _isLoading = true;
       _error = null;
@@ -125,4 +124,3 @@ class LoginViewModel extends ChangeNotifier {
     }
   }
 }
-

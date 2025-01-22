@@ -82,6 +82,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   Widget _buildListView(CalendarViewModel viewModel) {
     final entries = viewModel.getByDate(viewModel.state.selectedDate);
+    print('Selected date: ${viewModel.state.selectedDate}');
+    print('Available entries: ${viewModel.state.calendars.length}');
+    print('Filtered entries: ${entries.length}');
 
     if (entries.isEmpty) {
       return const Center(

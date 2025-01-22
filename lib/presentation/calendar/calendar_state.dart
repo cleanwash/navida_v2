@@ -1,18 +1,29 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:navida_v2/domain/model/flight_calendar.dart';
 
-part 'calendar_state.freezed.dart';
-part 'calendar_state.g.dart';
+class CalendarState {
+  final List<FlightCalendar> calendars;
+  final DateTime selectedDate;
+  final double totalFlightTime;
+  final bool isLoading;
 
-@freezed
-class CalendarState with _$CalendarState {
-  factory CalendarState({
-    @Default([]) List<FlightCalendar> calendars,
-    required DateTime selectedDate,
-    @Default(0.0) double totalFlightTime,
-    @Default(false) isLoading,
-  }) = _CalendarState;
+  CalendarState({
+    this.calendars = const [],
+    required this.selectedDate,
+    this.totalFlightTime = 0.0,
+    this.isLoading = false,
+  });
 
-  factory CalendarState.fromJson(Map<String, dynamic> json) =>
-      _$CalendarStateFromJson(json);
+  CalendarState copyWith({
+    List<FlightCalendar>? calendars,
+    DateTime? selectedDate,
+    double? totalFlightTime,
+    bool? isLoading,
+  }) {
+    return CalendarState(
+      calendars: calendars ?? this.calendars,
+      selectedDate: selectedDate ?? this.selectedDate,
+      totalFlightTime: totalFlightTime ?? this.totalFlightTime,
+      isLoading: isLoading ?? this.isLoading,
+    );
+  }
 }

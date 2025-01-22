@@ -43,18 +43,29 @@ class CalendarViewModel extends ChangeNotifier {
     }
   }
 
+  // List<FlightCalendar> getByDate(DateTime date) {
+  //   return state.calendars
+  //       .where((entry) => DateTime.utc(
+  //             entry.createdAt.year,
+  //             entry.createdAt.month,
+  //             entry.createdAt.day,
+  //           ).isAtSameMomentAs(DateTime.utc(
+  //             date.year,
+  //             date.month,
+  //             date.day,
+  //           )))
+  //       .toList();
+  // }
+
   List<FlightCalendar> getByDate(DateTime date) {
-    return state.calendars
-        .where((entry) => DateTime.utc(
-              entry.createdAt.year,
-              entry.createdAt.month,
-              entry.createdAt.day,
-            ).isAtSameMomentAs(DateTime.utc(
-              date.year,
-              date.month,
-              date.day,
-            )))
-        .toList();
+    return state.calendars.where((entry) {
+      final entryDate = entry.createdAt;
+      final compareDate = date;
+
+      return entryDate.year == compareDate.year &&
+          entryDate.month == compareDate.month &&
+          entryDate.day == compareDate.day;
+    }).toList();
   }
 
   Future<void> create(FlightCalendar calendar) async {
