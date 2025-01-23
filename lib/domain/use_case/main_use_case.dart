@@ -1,9 +1,9 @@
 import 'package:navida_v2/domain/repository/flight_calendart_repository.dart';
 
-class MianUseCase {
+class MainUseCase {
   final FlightCalendarRepository _flightCalendarRepository;
 
-  MianUseCase({
+  MainUseCase({
     required FlightCalendarRepository flightCalendarRepository,
   }) : _flightCalendarRepository = flightCalendarRepository;
 
