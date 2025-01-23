@@ -2,13 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:navida_v2/domain/model/flight_goal_time.dart';
 import 'package:navida_v2/presentation/component/flight_box.dart';
+import 'package:navida_v2/presentation/main/main_view_model.dart';
 import 'package:navida_v2/util/ui/text_styles.dart';
+import 'package:provider/provider.dart';
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
   @override
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      context.read<MainViewModel>().loadTotalFlightTime();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final viewModel = context.watch<MainViewModel>();
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       body: Stack(
@@ -58,7 +75,9 @@ class MainScreen extends StatelessWidget {
                             flightGoalTime: FlightGoalTime(
                               logoPath: 'assets/images/cessna.jpg',
                               airlineName: '나의 비행 시간',
-                              flightHours: '',
+                              flightHours: viewModel.totalFlightTime > 0
+                                  ? viewModel.totalFlightTime.toString()
+                                  : '비행시간을 입력하세요',
                             ),
                           ),
                           FlightBox(
