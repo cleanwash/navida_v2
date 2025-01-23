@@ -85,6 +85,14 @@ final router = GoRouter(
               path: Routerpath.calendar,
               builder: (context, state) => ChangeNotifierProvider(
                 create: (context) => CalendarViewModel(
+                  mainViewModel: MainViewModel(
+                    mainUseCase: MainUseCase(
+                      flightCalendarRepository: FlightCalendarRepositoryImpl(
+                        firestore: FirebaseFirestore.instance,
+                        userId: FirebaseAuth.instance.currentUser!.uid,
+                      ),
+                    ),
+                  ),
                   repository: FlightCalendarRepositoryImpl(
                     firestore: FirebaseFirestore.instance,
                     userId: FirebaseAuth.instance.currentUser!.uid,

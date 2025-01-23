@@ -26,6 +26,10 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     final viewModel = context.watch<MainViewModel>();
 
+    Future.microtask(() {
+      viewModel.loadTotalFlightTime();
+    });
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       body: Stack(
@@ -77,7 +81,7 @@ class _MainScreenState extends State<MainScreen> {
                               airlineName: '나의 비행 시간',
                               flightHours: viewModel.totalFlightTime > 0
                                   ? viewModel.totalFlightTime.toString()
-                                  : '비행시간을 입력하세요',
+                                  : '0',
                             ),
                           ),
                           FlightBox(

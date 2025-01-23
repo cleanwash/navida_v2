@@ -4,17 +4,28 @@ import 'package:flutter/material.dart';
 import 'package:navida_v2/domain/model/flight_calendar.dart';
 import 'package:navida_v2/domain/repository/flight_calendart_repository.dart';
 import 'package:navida_v2/presentation/calendar/calendar_state.dart';
+import 'package:navida_v2/presentation/main/main_view_model.dart';
 
 class CalendarViewModel extends ChangeNotifier {
   final FlightCalendarRepository _repository;
+  final MainViewModel _mainViewModel;
   CalendarState _state = CalendarState(selectedDate: DateTime.now());
+
   CalendarState get state => _state;
 
-  CalendarViewModel({
-    required FlightCalendarRepository repository,
-  }) : _repository = repository {
+  CalendarViewModel(
+      {required FlightCalendarRepository repository,
+      required MainViewModel mainViewModel})
+      : _repository = repository,
+        _mainViewModel = mainViewModel {
     loadCalendars();
   }
+
+  // CalendarViewModel(this._mainViewModel, {
+  //   required FlightCalendarRepository repository,
+  // }) : _repository = repository {
+  //   loadCalendars();
+  // }
 
   Future<void> loadCalendars() async {
     try {
@@ -24,8 +35,11 @@ class CalendarViewModel extends ChangeNotifier {
       final calendars = await _repository.getFlightCalendars();
 
       if (calendars.isEmpty) {
-        _state =
-            state.copyWith(calendars: [], totalFlightTime: 0, isLoading: false);
+        _state = state.copyWith(
+          calendars: [],
+          totalFlightTime: 0,
+          isLoading: false,
+        );
       } else {
         final totalFlightTime = calendars.fold<double>(
           0,
@@ -33,15 +47,15 @@ class CalendarViewModel extends ChangeNotifier {
         );
 
         _state = state.copyWith(
-            calendars: calendars,
-            totalFlightTime: totalFlightTime,
-            isLoading: false);
+          calendars: calendars,
+          totalFlightTime: totalFlightTime,
+          isLoading: false,
+        );
       }
+      await _mainViewModel.loadTotalFlightTime(); // MainViewModel 업데이트 추가
       notifyListeners();
     } catch (e) {
-      _state = state.copyWith(
-        isLoading: false,
-      );
+      _state = state.copyWith(isLoading: false);
       notifyListeners();
       print('Error loading calendars: $e');
     }
@@ -65,6 +79,7 @@ class CalendarViewModel extends ChangeNotifier {
 
       await _repository.createFlightCalendar(calendar);
       await loadCalendars();
+      await _mainViewModel.loadTotalFlightTime(); // MainViewModel 업데이트 추가
     } catch (e) {
       _state = state.copyWith(isLoading: false);
       notifyListeners();
@@ -79,6 +94,7 @@ class CalendarViewModel extends ChangeNotifier {
 
       await _repository.updateFlightCalendar(id, updatedEntry);
       await loadCalendars();
+      await _mainViewModel.loadTotalFlightTime(); // MainViewModel 업데이트 추가
     } catch (e) {
       _state = state.copyWith(isLoading: false);
       notifyListeners();
@@ -93,6 +109,7 @@ class CalendarViewModel extends ChangeNotifier {
 
       await _repository.deleteFlightCalendar(id);
       await loadCalendars();
+      await _mainViewModel.loadTotalFlightTime();
     } catch (e) {
       _state = state.copyWith(isLoading: false);
       notifyListeners();
