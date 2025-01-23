@@ -1,9 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:navida_v2/core/routing/routerPath.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class DrawerViewModel with ChangeNotifier {
+class NoticeViewModel with ChangeNotifier {
   void signOut() async {
     await FirebaseAuth.instance.signOut();
     notifyListeners();
@@ -34,7 +35,7 @@ class DrawerViewModel with ChangeNotifier {
   void _deleteAccount(BuildContext context) async {
     try {
       await FirebaseAuth.instance.currentUser?.delete();
-      context.go('/login');
+      context.go(Routerpath.loginRoot);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('회원탈퇴 중 오류가 발생했습니다: $e')),

@@ -17,6 +17,8 @@ import 'package:navida_v2/presentation/login/login_view_model.dart';
 import 'package:navida_v2/presentation/login/screen/login_root.dart';
 import 'package:navida_v2/presentation/main/main_screen.dart';
 import 'package:navida_v2/presentation/main/main_view_model.dart';
+import 'package:navida_v2/presentation/notice/notice_screen.dart';
+import 'package:navida_v2/presentation/notice/notice_view_model.dart';
 import 'package:navida_v2/presentation/quiz/quiz_screen.dart';
 import 'package:navida_v2/presentation/quiz/quiz_view_model.dart';
 import 'package:navida_v2/presentation/splash/splash_screen.dart';
@@ -117,6 +119,17 @@ final router = GoRouter(
             ),
           ],
         ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: Routerpath.notice,
+              builder: (context, state) => ChangeNotifierProvider(
+                create: (context) => NoticeViewModel(),
+                child: NoticeScreen(),
+              ),
+            )
+          ],
+        )
       ],
     ),
   ],
