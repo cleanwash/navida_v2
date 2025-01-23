@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
 import 'package:navida_v2/core/presentation/navigation_screen.dart';
 import 'package:navida_v2/core/routing/routerPath.dart';
@@ -73,7 +74,9 @@ final router = GoRouter(
               builder: (context, state) => ChangeNotifierProvider(
                 create: (context) => CalendarViewModel(
                   repository: FlightCalendarRepositoryImpl(
-                      firestore: FirebaseFirestore.instance),
+                    firestore: FirebaseFirestore.instance,
+                    userId: FirebaseAuth.instance.currentUser!.uid,
+                  ),
                 ),
                 child: CalendarScreen(),
               ),

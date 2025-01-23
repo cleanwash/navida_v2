@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:navida_v2/domain/model/flight_calendar.dart';
 import 'package:navida_v2/domain/repository/flight_calendart_repository.dart';
@@ -21,41 +22,30 @@ class CalendarViewModel extends ChangeNotifier {
       notifyListeners();
 
       final calendars = await _repository.getFlightCalendars();
-      final totalFlightTime = calendars.fold<double>(
-        0,
-        (sum, entry) => sum + entry.totalFlightTime,
-      );
 
-      _state = state.copyWith(
-        calendars: calendars,
-        totalFlightTime: totalFlightTime,
-        isLoading: false,
-      );
+      if (calendars.isEmpty) {
+        _state =
+            state.copyWith(calendars: [], totalFlightTime: 0, isLoading: false);
+      } else {
+        final totalFlightTime = calendars.fold<double>(
+          0,
+          (sum, entry) => sum + entry.totalFlightTime,
+        );
+
+        _state = state.copyWith(
+            calendars: calendars,
+            totalFlightTime: totalFlightTime,
+            isLoading: false);
+      }
       notifyListeners();
     } catch (e) {
       _state = state.copyWith(
-        calendars: [],
-        totalFlightTime: 0,
         isLoading: false,
       );
       notifyListeners();
       print('Error loading calendars: $e');
     }
   }
-
-  // List<FlightCalendar> getByDate(DateTime date) {
-  //   return state.calendars
-  //       .where((entry) => DateTime.utc(
-  //             entry.createdAt.year,
-  //             entry.createdAt.month,
-  //             entry.createdAt.day,
-  //           ).isAtSameMomentAs(DateTime.utc(
-  //             date.year,
-  //             date.month,
-  //             date.day,
-  //           )))
-  //       .toList();
-  // }
 
   List<FlightCalendar> getByDate(DateTime date) {
     return state.calendars.where((entry) {
@@ -78,7 +68,7 @@ class CalendarViewModel extends ChangeNotifier {
     } catch (e) {
       _state = state.copyWith(isLoading: false);
       notifyListeners();
-      print('Error creating calendar entry: $e');
+      rethrow;
     }
   }
 
@@ -106,7 +96,6 @@ class CalendarViewModel extends ChangeNotifier {
     } catch (e) {
       _state = state.copyWith(isLoading: false);
       notifyListeners();
-      print('Error deleting calendar entry: $e');
     }
   }
 
@@ -159,8 +148,7 @@ class CalendarViewModel extends ChangeNotifier {
             ),
             TextButton(
               child: const Text('추가'),
-              onPressed: () {
-                // 입력값 검증
+              onPressed: () async {
                 final totalFlightTime =
                     double.tryParse(totalFlightTimeController.text);
                 final distance = double.tryParse(distanceController.text);
@@ -175,11 +163,20 @@ class CalendarViewModel extends ChangeNotifier {
                   return;
                 }
 
+                final currentUser = FirebaseAuth.instance.currentUser;
+                if (currentUser == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('로그인이 필요합니다.')),
+                  );
+                  return;
+                }
+
                 final docRef = FirebaseFirestore.instance
                     .collection('flightCalendar')
                     .doc();
                 final newCalendar = FlightCalendar(
                   id: docRef.id,
+                  userId: currentUser.uid,
                   createdAt: state.selectedDate,
                   aircraftRegistration: aircraftRegistrationController.text,
                   totalFlightTime: totalFlightTime,
@@ -187,8 +184,14 @@ class CalendarViewModel extends ChangeNotifier {
                   history: historyController.text,
                 );
 
-                create(newCalendar);
-                Navigator.of(context).pop();
+                try {
+                  await create(newCalendar);
+                  Navigator.of(context).pop();
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('저장 중 오류가 발생했습니다: $e')),
+                  );
+                }
               },
             ),
           ],

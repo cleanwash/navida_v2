@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FlightCalendar {
   final String? id;
+  final String userId;
   final DateTime createdAt;
   final String aircraftRegistration;
   final double totalFlightTime;
@@ -10,6 +11,7 @@ class FlightCalendar {
 
   FlightCalendar({
     this.id,
+    required this.userId,
     required this.createdAt,
     required this.aircraftRegistration,
     required this.totalFlightTime,
@@ -20,6 +22,7 @@ class FlightCalendar {
   factory FlightCalendar.fromJson(Map<String, dynamic> json) {
     return FlightCalendar(
       id: json['id'] as String?,
+      userId: json['userId'] as String, // userId 추가
       createdAt: (json['createdAt'] as Timestamp).toDate(),
       aircraftRegistration: json['aircraftRegistration'] as String,
       totalFlightTime: (json['totalFlightTime'] as num).toDouble(),
@@ -31,6 +34,7 @@ class FlightCalendar {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'userId': userId, // userId 추가
       'createdAt': Timestamp.fromDate(createdAt),
       'aircraftRegistration': aircraftRegistration,
       'totalFlightTime': totalFlightTime,
@@ -41,6 +45,7 @@ class FlightCalendar {
 
   FlightCalendar copyWith({
     String? id,
+    String? userId,
     DateTime? createdAt,
     String? aircraftRegistration,
     double? totalFlightTime,
@@ -49,6 +54,7 @@ class FlightCalendar {
   }) {
     return FlightCalendar(
       id: id ?? this.id,
+      userId: userId ?? this.userId,
       createdAt: createdAt ?? this.createdAt,
       aircraftRegistration: aircraftRegistration ?? this.aircraftRegistration,
       totalFlightTime: totalFlightTime ?? this.totalFlightTime,

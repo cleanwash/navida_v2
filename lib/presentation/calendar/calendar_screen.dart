@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -79,7 +80,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Widget _buildListView(CalendarViewModel viewModel) {
-    if (viewModel.state.calendars.isEmpty) {
+    if (viewModel.state.isLoading) {
       return const Center(
         child: CircularProgressIndicator(),
       );
@@ -163,8 +164,17 @@ class _CalendarScreenState extends State<CalendarScreen> {
             TextButton(
               child: const Text('수정'),
               onPressed: () {
+                final currentUser = FirebaseAuth.instance.currentUser;
+                if (currentUser == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('로그인이 필요합니다.')),
+                  );
+                  return;
+                }
+
                 final updatedCalendar = FlightCalendar(
                   id: entry.id,
+                  userId: currentUser.uid,
                   createdAt: entry.createdAt,
                   aircraftRegistration: aircraftRegistrationController.text,
                   totalFlightTime:
@@ -188,28 +198,29 @@ class _CalendarScreenState extends State<CalendarScreen> {
   void _showDeleteDialog(
       BuildContext context, CalendarViewModel viewModel, FlightCalendar entry) {
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('삭제 확인'),
-            content: const Text('이 항목을 삭제하시겠습니까?'),
-            actions: <Widget>[
-              TextButton(
-                child: const Text('취소'),
-                onPressed: () => Navigator.of(context).pop(),
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('삭제 확인'),
+          content: const Text('이 항목을 삭제하시겠습니까?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('취소'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.red,
               ),
-              TextButton(
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.red,
-                ),
-                onPressed: () {
-                  viewModel.delete(entry.id!);
-                  Navigator.of(context).pop();
-                },
-                child: const Text('삭제'),
-              ),
-            ],
-          );
-        });
+              onPressed: () {
+                viewModel.delete(entry.id!);
+                Navigator.of(context).pop();
+              },
+              child: const Text('삭제'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
