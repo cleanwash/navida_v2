@@ -35,10 +35,10 @@ class QuizResultCard extends StatelessWidget {
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
-            const Text(
-              '점수: 0/0',
-              style: TextStyle(fontSize: 18),
-            ),
+            // const Text(
+            //   '점수: 0/0',
+            //   style: TextStyle(fontSize: 18),
+            // ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: onRestart,
