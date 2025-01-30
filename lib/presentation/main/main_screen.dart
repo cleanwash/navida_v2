@@ -50,19 +50,13 @@ class _MainScreenState extends State<MainScreen> {
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'My Flight Diary',
-                          style: TextStyles.titleTextSemiBold
-                              .copyWith(color: Colors.black),
-                        ),
-                      ],
+                      children: [],
                     ),
                     const SizedBox(height: 30),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('  🧑🏽‍✈️나의 비행시간👩🏻‍✈️',
+                        Text('  🧑🏽‍✈️My Flight Diary👩🏻‍✈️',
                             style: TextStyles.titleTextMedium),
                       ],
                     ),

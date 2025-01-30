@@ -2,7 +2,7 @@
     <string name="facebook_client_token">9852dc0f8a0c05c30f28c478f56d2a4f</string> -->
 
 <resources>
-    <string name="app_name">navida_v2</string>
+    <string name="app_name">비행다이어리</string>
     <string name="facebook_app_id">1354010085968835</string>
     <string name="fb_login_protocol_scheme">fb1354010085968835</string>
     <string name="facebook_client_token">9852dc0f8a0c05c30f28c478f56d2a4f</string>
